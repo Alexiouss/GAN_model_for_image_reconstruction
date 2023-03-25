@@ -40,4 +40,4 @@ While OpenGL is not as commonly used today, this project allowed me to gain valu
 By implementing this project, I was able to develop my skills in 3D modeling, lighting, and shading. 
 It also gave me a deeper understanding of how to optimize graphics for real-time applications. 
 Overall, this project was a great learning experience and helped me to build a strong foundation in computer graphics.
-
+Before running, extract the external zip in the same folder as the rest of the files.
