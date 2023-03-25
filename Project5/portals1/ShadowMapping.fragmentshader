@@ -1,0 +1,138 @@
+#version 330 core
+out vec4 FragColor;
+uniform vec4 planeCoeffs1,planeCoeffs2;
+struct Light {
+    vec4 La;
+    vec4 Ld;
+    vec4 Ls;
+    vec3 lightPosition_worldspace;
+    float power;
+};
+uniform Light light;
+
+
+// materials
+struct Material {
+    vec4 Ka; 
+    vec4 Kd;
+    vec4 Ks;
+    float Ns; 
+};
+uniform Material mtl;
+
+
+in VS_OUT {
+    vec3 FragPos;
+    vec3 Normal;
+    vec2 TexCoords;
+} fs_in;
+in mat3 TBN;
+//uniform sampler2D diffuseTexture;
+//uniform samplerCube depthMap;
+
+//uniform vec3 viewPos;
+
+uniform float far_plane;
+//uniform bool shadows;
+
+uniform samplerCube shadowMapSampler;
+uniform sampler2D diffuseColorSampler;
+uniform sampler2D specularColorSampler;
+uniform sampler2D normalColorSampler;
+
+
+uniform int useTexture = 0;
+//uniform mat4 V;
+
+uniform vec3 cam_pos;
+
+
+// array of offset direction for sampling
+float ShadowCalculation(vec3 fragPos)
+{
+    // get vector between fragment position and light position
+    vec3 fragToLight = fragPos - light.lightPosition_worldspace;
+
+    float currentDepth = length(fragToLight);
+    
+    float shadow = 0.0;
+    float bias = 0.01; 
+    float samples = 2.0;
+    float offset = 0.01;
+    for(float x = -offset; x < offset; x += offset / (samples * 0.5))
+    {
+        for(float y = -offset; y < offset; y += offset / (samples * 0.5))
+        {
+            for(float z = -offset; z < offset; z += offset / (samples * 0.5))
+            {
+                float closestDepth = texture(shadowMapSampler, fragToLight + vec3(x, y, z)).r; // use lightdir to lookup cubemap
+                closestDepth *= far_plane;   // Undo mapping [0;1]
+                if(currentDepth - bias > closestDepth)
+                    shadow += 1.0;
+            }
+        }
+    }
+    shadow /= (samples * samples * samples);
+    
+    return (1-shadow);
+
+  
+}
+void main()
+{          
+
+    vec4 _Ks = mtl.Ks;
+    vec4 _Kd = mtl.Kd;
+    vec4 _Ka = mtl.Ka;
+    float _Ns = mtl.Ns;
+    vec3 normal;
+    normal = texture(normalColorSampler, fs_in.TexCoords).rgb;
+    normal = normal * 2.0 - 1.0;   
+    normal = normalize(TBN*normal);
+    // use texture for materials
+    if (useTexture == 1 || useTexture == 2) {
+        _Ks = vec4(texture(specularColorSampler,  fs_in.TexCoords).rgb, 1.0);
+        _Kd = vec4(texture(diffuseColorSampler,  fs_in.TexCoords).rgb, 1.0);
+        _Ka = vec4(0.1, 0.1, 0.1, 1.0);
+        _Ns = 32;
+    }
+    if (useTexture == 3) {
+        _Ks = vec4(0.0);
+        _Kd = vec4(texture(diffuseColorSampler,  fs_in.TexCoords).rgb, 1.0);
+        _Ka = vec4(0.1, 0.1, 0.1, 1.0);
+        _Ns = 32;
+    }
+
+    // model ambient intensity for both lights (Ia)
+    vec4 Ia = light.La * _Ka;
+    vec3 N = normalize(fs_in.Normal);
+    if(useTexture==2)N=normal;
+    // ambient
+    // diffuse
+    vec3 lightDir = normalize(light.lightPosition_worldspace - fs_in.FragPos);
+    float diff = max(dot(lightDir, N), 0.0);
+    vec4 diffuse = light.Ld* _Kd*diff ;
+    // specular
+    vec3 viewDir = normalize(cam_pos - fs_in.FragPos);
+    float spec = 0.0;
+    vec3 halfwayDir = normalize(lightDir + viewDir);  
+    spec = pow(max(dot(N, halfwayDir), 0.0), 64.0);
+    vec4 specular = spec * light.Ls*_Ks;    
+    // calculate shadow
+    float distance1 = length(light.lightPosition_worldspace - fs_in.FragPos);
+    float distance_sq = distance1 * distance1;
+    float constant  = 1.0; 
+    float linear    = 0.7;
+    float quadratic = 1.8;
+    float attenuation = 1.0 / (1.0 + linear * distance1 + quadratic *distance_sq);
+
+    float shadow = ShadowCalculation(fs_in.FragPos);                      
+    vec4 lighting = (Ia + (1.0 - shadow) * (diffuse + specular));    
+    
+    FragColor = vec4(lighting);
+
+    FragColor = vec4(
+        Ia+
+        shadow* (diffuse * light.power *attenuation)+ 
+        shadow* (specular * light.power *attenuation));
+}
