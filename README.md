@@ -4,17 +4,23 @@ Projects:
 [Project 1]: Implementation of a machine learning model to inpaint corrupted images.
 
 As part of a project, I successfully implemented a machine learning model to inpaint corrupted images. The images in question had been corrupted with noise and a significant amount of information had been lost, making them difficult to interpret. To address this issue, we used machine learning algorithms to train a model on a dataset of high-quality images, which enabled the model to learn the patterns and features that are typically present in clean images. 
-Using this knowledge, the model was able to make informed predictions about the missing or corrupted pixels in the images, effectively filling in the gaps and restoring the images to their original quality. This approach proved effective, and I was able to recover a significant amount of the lost information, enabling us to extract the data we needed from the images. 
+Using this knowledge, the model was able to make informed predictions about the missing or corrupted pixels in the images, effectively filling in the gaps and restoring the images to their original quality. This approach proved effective, and I was able to recover a significant amount of the lost information, enabling us to extract the data we needed from the images.
+
+The file data21.mat contains the data of the generative model which was pretrained. The other two files contain the data of the corrupt images. Especially the file data22.mat contains two matrices named Xi and Xn. Xi contains four 8s which are the ideal 8s and are used for comparison the Xn matrix contains the corrupt images. Finally in the file data23.mat we will find again two matrices. One of them is the same as befor and the other contains images with low resolution. 
 
 
 [Project 2]: Implementation of a classifier using the Gaussian Kernel method.
 
-In this project, I used a kernel method for classification by finding the optimal decision boundary that can best separate my data points. To achieve this, I utilized the Gaussian kernel function provided to me. This function allowed me to transform my input data points into a higher-dimensional feature space, where the optimal decision boundary was found. The goal was to ultimately create a model that could accurately classify new, unseen data points based on the patterns learned from my training data.
+In this project, I used a kernel method for classification by finding the optimal decision boundary that can best separate my data points. To achieve this, I utilized the Gaussian kernel function provided to me. This function allowed me to transform my input data points into a higher-dimensional feature space, where the optimal decision boundary was found. The goal was to ultimately create a model that could accurately classify new, unseen data points based on the patterns learned from my training data. 
+
+The file data32.mat contains of 2 matrices labeled "stars" and "circles" and are the data in 2d space used to find the decision boundary.
 
 [Project 3]: Clustering, using the K-means algorithm.
 
 A project I worked on involved using the K-means clustering algorithm to group similar data points together based on their features. The goal was to identify patterns or trends within the data that could be used to gain insights and make more informed decisions. The K-means algorithm works by iteratively partitioning the data into K clusters based on their similarity, with each cluster being represented by its centroid. The algorithm then assigns each data point to the nearest centroid and recalculates the centroids based on the new cluster assignments. 
-This process continues until the centroids no longer change significantly or until a maximum number of iterations is reached. Overall, the project involved selecting an appropriate value of K, preprocessing the data, running the K-means algorithm, and then analyzing and interpreting the results.
+This process continues until the centroids no longer change significantly or until a maximum number of iterations is reached. Overall, the project involved selecting an appropriate value of K, preprocessing the data, running the K-means algorithm, and then analyzing and interpreting the results. Furthermore we made an optimization of the algorithm by noticing that the K-means algorithm has the tendency to create linear separation boundaries and for that reason we added another dimension in our data to separate them more accurately.
+
+The file data33.mat contains the data used for the clustering.
 
 [Project 4]: 3D point classification and feature extraction.
 
