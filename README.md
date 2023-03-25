@@ -24,6 +24,9 @@ The file data33.mat contains the data used for the clustering.
 
 [Project 4]: 3D point classification and feature extraction.
 
+!!!DISCLAIMER!!!
+The project uses a library  that was developed in my university and it is not used for commercial purposes. For that reason you will not be able to run the code but you can only read it. I hope to recently implement the project using a more widespread library such as open3d.
+
 As a student, I had the opportunity to work on a project in the field of 3D Geometry. 
 Specifically, I was given a dataset of 3D plane models and was tasked with using machine learning algorithms to classify the points of the model as "wing" or "not wing".
 Before performing the classification, I first had to extract relevant features from the points of the models. To do this, I used methods such as Gaussian curvature and normal vector extraction to capture information about the surface geometry of the planes. Next, I sampled the data and interpolated the features in the new points. The sampling method used in this project involved modifying the number of points in the 3D plane models to ensure consistency in the dataset. 
